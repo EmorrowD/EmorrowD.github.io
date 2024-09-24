@@ -1,33 +1,44 @@
+/* Existing styles... */
+
 body {
     background-color: #1e1e1e;
     color: #ffffff;
     font-family: Arial, sans-serif;
     text-align: center;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
 }
+
 h1 {
     color: #c9a0dc;
 }
+
 .table-container {
     width: 30%;
     margin: 20px;
     display: inline-block;
     vertical-align: top;
 }
+
 table {
     width: 100%;
     background-color: #2e2e2e;
     border-collapse: collapse;
     margin-bottom: 10px;
 }
+
 th, td {
     border: 1px solid #444444;
     padding: 8px;
     text-align: left;
 }
+
 th {
     background-color: #3e3e3e;
     color: #c9a0dc;
 }
+
 textarea {
     width: calc(100% - 12px);
     background-color: #3e3e3e;
@@ -37,6 +48,7 @@ textarea {
     margin-top: 5px;
     resize: vertical;
 }
+
 button {
     background-color: #c9a0dc;
     border: none;
@@ -45,27 +57,42 @@ button {
     margin-top: 5px;
     cursor: pointer;
 }
+
 .button-full-width {
     width: 100%;
 }
-#groups-container {
-    width: 80%;
-    margin: 30px auto 20px;
-    text-align: center;
+
+#particles-js {
+    position: relative;
+    width: 100%;
+    height: auto;
+    min-height: 500px; /* Adjust as needed */
 }
+
+#groups-container {
+    position: relative;
+    z-index: 1; /* Ensure content appears above particles */
+}
+
+#groups-container .team {
+    margin-bottom: 40px; /* Add space between teams */
+}
+
 .groupTable {
     width: 100%;
     background-color: #2e2e2e;
     border-collapse: collapse;
     margin-bottom: 20px;
-    table-layout: fixed;
+    table-layout: fixed; /* Ensure fixed table layout */
 }
+
 .groupTable th, .groupTable td {
     border: 1px solid #444444;
     padding: 8px;
     text-align: center;
-    width: 20%;
+    width: 20%; /* Each column takes up 20% of the table width */
 }
+
 .team-title {
     color: #c9a0dc;
     margin-top: 20px;
