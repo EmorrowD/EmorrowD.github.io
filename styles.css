@@ -1,101 +1,187 @@
-/* Existing styles... */
+var tanks = [];
+var dpsList = [];
+var healers = [];
 
-body {
-    background-color: #1e1e1e;
-    color: #ffffff;
-    font-family: Arial, sans-serif;
-    text-align: center;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
+var teamNames = [
+    'Eclipse', 'Interstellar', 'Cosmic Shift', 'Starlight', 'Nebula', 'Supernova', 'Galaxy', 'Orbit',
+    'Meteor', 'Asteroid', 'Comet', 'Quasar', 'Aurora', 'Solar Flare', 'Pulsar', 'Black Hole',
+    'Dark Matter', 'Photon', 'Gravity', 'Zenith', 'Horizon', 'Voyager', 'Lunar', 'Celestial',
+    'Nova', 'Spectrum', 'Astro', 'Radiance', 'Infinity', 'Constellation'
+];
+
+function addPlayers(role) {
+    var inputId = role + 'Input';
+    var tableId = role + 'Table';
+    var playerNames = document.getElementById(inputId).value.trim();
+
+    if (playerNames !== '') {
+        var namesArray = playerNames.split('\n');
+        var tableBody = document.getElementById(tableId).getElementsByTagName('tbody')[0];
+
+        namesArray.forEach(function(playerName) {
+            playerName = playerName.trim();
+            if (playerName !== '') {
+                var newRow = tableBody.insertRow();
+                var newCell = newRow.insertCell(0);
+                newCell.textContent = playerName;
+
+                if (role === 'tank') {
+                    tanks.push(playerName);
+                } else if (role === 'dps') {
+                    dpsList.push(playerName);
+                } else if (role === 'healer') {
+                    healers.push(playerName);
+                }
+            }
+        });
+
+        document.getElementById(inputId).value = '';
+    }
 }
 
-h1 {
-    color: #c9a0dc;
+function generateTeams() {
+    var groupsContainer = document.getElementById('groups-container');
+    groupsContainer.innerHTML = '';
+
+    var numTeams = Math.min(
+        Math.floor(tanks.length / 1),
+        Math.floor(dpsList.length / 3),
+        Math.floor(healers.length / 1),
+        teamNames.length
+    );
+
+    if (numTeams < 1) {
+        alert('Not enough players or team names to generate any teams.');
+        return;
+    }
+
+    var availableTeamNames = teamNames.slice();
+
+    for (var i = 0; i < numTeams; i++) {
+        var teamNameIndex = Math.floor(Math.random() * availableTeamNames.length);
+        var teamName = availableTeamNames.splice(teamNameIndex, 1)[0];
+
+        var selectedTank = tanks.splice(Math.floor(Math.random() * tanks.length), 1)[0];
+        var selectedHealer = healers.splice(Math.floor(Math.random() * healers.length), 1)[0];
+
+        var selectedDPS = [];
+        for (var j = 0; j < 3; j++) {
+            var dpsIndex = Math.floor(Math.random() * dpsList.length);
+            selectedDPS.push(dpsList.splice(dpsIndex, 1)[0]);
+        }
+
+        removePlayerFromTable('tankTable', selectedTank);
+        removePlayerFromTable('healerTable', selectedHealer);
+        selectedDPS.forEach(function(dps) {
+            removePlayerFromTable('dpsTable', dps);
+        });
+
+        var teamDiv = document.createElement('div');
+        teamDiv.className = 'team';
+
+        // Add team title
+        var teamTitle = document.createElement('div');
+        teamTitle.className = 'team-title';
+        teamTitle.textContent = 'Team ' + teamName;
+        teamDiv.appendChild(teamTitle);
+
+        var teamTable = document.createElement('table');
+        teamTable.className = 'groupTable';
+
+        var thead = document.createElement('thead');
+        var headerRow = document.createElement('tr');
+        var roles = ['Tank', 'DPS 1', 'DPS 2', 'DPS 3', 'Healer'];
+        roles.forEach(function(role) {
+            var th = document.createElement('th');
+            th.textContent = role;
+            headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        teamTable.appendChild(thead);
+
+        var tbody = document.createElement('tbody');
+        var dataRow = document.createElement('tr');
+        [selectedTank].concat(selectedDPS).concat([selectedHealer]).forEach(function(name) {
+            var td = document.createElement('td');
+            td.textContent = name;
+            dataRow.appendChild(td);
+        });
+        tbody.appendChild(dataRow);
+        teamTable.appendChild(tbody);
+
+        teamDiv.appendChild(teamTable);
+        groupsContainer.appendChild(teamDiv);
+    }
+
+    // Initialize the particles after generating teams
+    initParticles();
 }
 
-.table-container {
-    width: 30%;
-    margin: 20px;
-    display: inline-block;
-    vertical-align: top;
+function removePlayerFromTable(tableId, playerName) {
+    var table = document.getElementById(tableId);
+    var tbody = table.getElementsByTagName('tbody')[0];
+    var rows = tbody.getElementsByTagName('tr');
+
+    for (var i = rows.length - 1; i >= 0; i--) {
+        var cellText = rows[i].cells[0].textContent;
+        if (cellText === playerName) {
+            tbody.deleteRow(i);
+            break;
+        }
+    }
 }
 
-table {
-    width: 100%;
-    background-color: #2e2e2e;
-    border-collapse: collapse;
-    margin-bottom: 10px;
-}
-
-th, td {
-    border: 1px solid #444444;
-    padding: 8px;
-    text-align: left;
-}
-
-th {
-    background-color: #3e3e3e;
-    color: #c9a0dc;
-}
-
-textarea {
-    width: calc(100% - 12px);
-    background-color: #3e3e3e;
-    border: 1px solid #555555;
-    color: #ffffff;
-    padding: 5px;
-    margin-top: 5px;
-    resize: vertical;
-}
-
-button {
-    background-color: #c9a0dc;
-    border: none;
-    color: #1e1e1e;
-    padding: 8px 16px;
-    margin-top: 5px;
-    cursor: pointer;
-}
-
-.button-full-width {
-    width: 100%;
-}
-
-#particles-js {
-    position: relative;
-    width: 100%;
-    height: auto;
-    min-height: 500px; /* Adjust as needed */
-}
-
-#groups-container {
-    position: relative;
-    z-index: 1; /* Ensure content appears above particles */
-}
-
-#groups-container .team {
-    margin-bottom: 40px; /* Add space between teams */
-}
-
-.groupTable {
-    width: 100%;
-    background-color: #2e2e2e;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-    table-layout: fixed; /* Ensure fixed table layout */
-}
-
-.groupTable th, .groupTable td {
-    border: 1px solid #444444;
-    padding: 8px;
-    text-align: center;
-    width: 20%; /* Each column takes up 20% of the table width */
-}
-
-.team-title {
-    color: #c9a0dc;
-    margin-top: 20px;
-    margin-bottom: 5px;
-    font-size: 1.2em;
+function initParticles() {
+    tsParticles.load("particles-js", {
+        fpsLimit: 60,
+        background: {
+            color: "#1e1e1e",
+        },
+        particles: {
+            number: {
+                value: 80,
+                density: {
+                    enable: true,
+                    area: 800,
+                },
+            },
+            color: {
+                value: ["#ffffff", "#c9a0dc", "#f0f0f0"],
+            },
+            shape: {
+                type: "circle",
+            },
+            opacity: {
+                value: 0.5,
+                random: false,
+            },
+            size: {
+                value: { min: 1, max: 3 },
+                random: true,
+            },
+            move: {
+                enable: true,
+                speed: 0.6,
+                direction: "none",
+                random: false,
+                straight: false,
+                outModes: {
+                    default: "out",
+                },
+            },
+        },
+        interactivity: {
+            detectsOn: "canvas",
+            events: {
+                onHover: {
+                    enable: false,
+                },
+                onClick: {
+                    enable: false,
+                },
+                resize: true,
+            },
+        },
+        detectRetina: true,
+    });
 }
