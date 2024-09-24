@@ -8,6 +8,7 @@
             background-color: #1e1e1e;
             color: #ffffff;
             font-family: Arial, sans-serif;
+            text-align: center; /* Center all content horizontally */
         }
         h1 {
             color: #c9a0dc;
@@ -16,7 +17,8 @@
         .table-container {
             width: 30%;
             margin: 20px;
-            float: left;
+            display: inline-block; /* Change from float to inline-block */
+            vertical-align: top; /* Align the tables at the top */
         }
         table {
             width: 100%;
@@ -49,38 +51,38 @@
             padding: 8px 16px;
             margin-top: 5px;
             cursor: pointer;
+        }
+        .button-full-width {
             width: 100%;
         }
-        #groupTable {
-            clear: both;
-            width: 90%;
-            margin: 50px auto 20px;
-            background-color: #2e2e2e;
-        }
-        .center {
+        #group-container {
+            width: 80%;
+            margin: 30px auto 20px;
             text-align: center;
         }
-        /* Clear floats after the columns */
-        .row:after {
-            content: "";
-            display: table;
-            clear: both;
+        #groupTable {
+            width: 100%;
+            background-color: #2e2e2e;
+            margin-bottom: 10px;
+            margin-left: auto;
+            margin-right: auto;
         }
-        /* Copy Button Styles */
         #copyButton {
             background-color: #c9a0dc;
             border: none;
             color: #1e1e1e;
             padding: 8px 16px;
-            margin-top: 10px;
             cursor: pointer;
+            width: 100%; /* Make button the same width as the table */
         }
+        /* Remove the .center class since we're centering via body */
     </style>
 </head>
 <body>
     <h1>Group Randomizer</h1>
 
-    <div class="row">
+    <!-- Row containing the three role sections -->
+    <div>
         <!-- Tank Section -->
         <div class="table-container">
             <table id="tankTable">
@@ -90,7 +92,7 @@
                 <tbody></tbody>
             </table>
             <textarea id="tankInput" placeholder="Paste Tank Names (one per line)" rows="5"></textarea>
-            <button onclick="addPlayers('tank')">Add Tanks</button>
+            <button class="button-full-width" onclick="addPlayers('tank')">Add Tanks</button>
         </div>
 
         <!-- DPS Section -->
@@ -102,7 +104,7 @@
                 <tbody></tbody>
             </table>
             <textarea id="dpsInput" placeholder="Paste DPS Names (one per line)" rows="5"></textarea>
-            <button onclick="addPlayers('dps')">Add DPS</button>
+            <button class="button-full-width" onclick="addPlayers('dps')">Add DPS</button>
         </div>
 
         <!-- Healer Section -->
@@ -114,17 +116,17 @@
                 <tbody></tbody>
             </table>
             <textarea id="healerInput" placeholder="Paste Healer Names (one per line)" rows="5"></textarea>
-            <button onclick="addPlayers('healer')">Add Healers</button>
+            <button class="button-full-width" onclick="addPlayers('healer')">Add Healers</button>
         </div>
     </div>
 
     <!-- Generate Group Button -->
-    <div class="center">
+    <div>
         <button onclick="generateGroup()">Generate Group</button>
     </div>
 
     <!-- Group Table and Copy Button -->
-    <div class="center">
+    <div id="group-container">
         <table id="groupTable">
             <thead>
                 <tr>
