@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Group Randomizer</title>
+    <title>Team Randomizer</title>
     <style>
         body {
             background-color: #1e1e1e;
@@ -64,15 +64,15 @@
             background-color: #2e2e2e;
             border-collapse: collapse;
             margin-bottom: 20px;
-            table-layout: fixed; /* Ensure fixed table layout */
+            table-layout: fixed;
         }
         .groupTable th, .groupTable td {
             border: 1px solid #444444;
             padding: 8px;
             text-align: center;
-            width: 20%; /* Each column takes up 20% of the table width */
+            width: 20%;
         }
-        .group-title {
+        .team-title {
             color: #c9a0dc;
             margin-top: 20px;
             margin-bottom: 5px;
@@ -81,7 +81,7 @@
     </style>
 </head>
 <body>
-    <h1>Group Randomizer</h1>
+    <h1>Team Randomizer</h1>
 
     <div>
         <div class="table-container">
@@ -119,17 +119,24 @@
     </div>
 
     <div>
-        <button onclick="generateGroups()">Generate Groups</button>
+        <button onclick="generateTeams()">Generate Teams</button>
     </div>
 
     <div id="groups-container">
-        <!-- Generated groups will be displayed here -->
+        <!-- Generated teams will be displayed here -->
     </div>
 
     <script>
         var tanks = [];
         var dpsList = [];
         var healers = [];
+
+        var teamNames = [
+            'Eclipse', 'Interstellar', 'Cosmic Shift', 'Starlight', 'Nebula', 'Supernova', 'Galaxy', 'Orbit',
+            'Meteor', 'Asteroid', 'Comet', 'Quasar', 'Aurora', 'Solar Flare', 'Pulsar', 'Black Hole',
+            'Dark Matter', 'Photon', 'Gravity', 'Zenith', 'Horizon', 'Voyager', 'Lunar', 'Celestial',
+            'Nova', 'Spectrum', 'Astro', 'Radiance', 'Infinity', 'Constellation'
+        ];
 
         function addPlayers(role) {
             var inputId = role + 'Input';
@@ -161,22 +168,28 @@
             }
         }
 
-        function generateGroups() {
+        function generateTeams() {
             var groupsContainer = document.getElementById('groups-container');
             groupsContainer.innerHTML = '';
 
-            var numGroups = Math.min(
+            var numTeams = Math.min(
                 Math.floor(tanks.length / 1),
                 Math.floor(dpsList.length / 3),
-                Math.floor(healers.length / 1)
+                Math.floor(healers.length / 1),
+                teamNames.length
             );
 
-            if (numGroups < 1) {
-                alert('Not enough players to generate any groups.');
+            if (numTeams < 1) {
+                alert('Not enough players or team names to generate any teams.');
                 return;
             }
 
-            for (var i = 0; i < numGroups; i++) {
+            var availableTeamNames = teamNames.slice();
+
+            for (var i = 0; i < numTeams; i++) {
+                var teamNameIndex = Math.floor(Math.random() * availableTeamNames.length);
+                var teamName = availableTeamNames.splice(teamNameIndex, 1)[0];
+
                 var selectedTank = tanks.splice(Math.floor(Math.random() * tanks.length), 1)[0];
                 var selectedHealer = healers.splice(Math.floor(Math.random() * healers.length), 1)[0];
 
@@ -192,16 +205,16 @@
                     removePlayerFromTable('dpsTable', dps);
                 });
 
-                var groupDiv = document.createElement('div');
+                var teamDiv = document.createElement('div');
 
-                // Add group title
-                var groupTitle = document.createElement('div');
-                groupTitle.className = 'group-title';
-                groupTitle.textContent = 'Group ' + (i + 1);
-                groupDiv.appendChild(groupTitle);
+                // Add team title
+                var teamTitle = document.createElement('div');
+                teamTitle.className = 'team-title';
+                teamTitle.textContent = 'Team ' + teamName;
+                teamDiv.appendChild(teamTitle);
 
-                var groupTable = document.createElement('table');
-                groupTable.className = 'groupTable';
+                var teamTable = document.createElement('table');
+                teamTable.className = 'groupTable';
 
                 var thead = document.createElement('thead');
                 var headerRow = document.createElement('tr');
@@ -212,7 +225,7 @@
                     headerRow.appendChild(th);
                 });
                 thead.appendChild(headerRow);
-                groupTable.appendChild(thead);
+                teamTable.appendChild(thead);
 
                 var tbody = document.createElement('tbody');
                 var dataRow = document.createElement('tr');
@@ -222,10 +235,10 @@
                     dataRow.appendChild(td);
                 });
                 tbody.appendChild(dataRow);
-                groupTable.appendChild(tbody);
+                teamTable.appendChild(tbody);
 
-                groupDiv.appendChild(groupTable);
-                groupsContainer.appendChild(groupDiv);
+                teamDiv.appendChild(teamTable);
+                groupsContainer.appendChild(teamDiv);
             }
         }
 
