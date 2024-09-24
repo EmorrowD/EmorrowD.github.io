@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Group Randomizer</title>
+    <style>
+        body {
+            background-color: #1e1e1e;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            color: #c9a0dc;
+            text-align: center;
+        }
+
+        .table-container {
+            width: 30%;
+            margin: 20px;
+            float: left;
+        }
+
+        table {
+            width: 100%;
+            background-color: #2e2e2e;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        th,
+        td {
+            border: 1px solid #444444;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #3e3e3e;
+            color: #c9a0dc;
+        }
+
+        textarea {
+            width: calc(100% - 12px);
+            background-color: #3e3e3e;
+            border: 1px solid #555555;
+            color: #ffffff;
+            padding: 5px;
+            margin-top: 5px;
+            resize: vertical;
+        }
+
+        button {
+            background-color: #c9a0dc;
+            border: none;
+            color: #1e1e1e;
+            padding: 8px 16px;
+            margin-top: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        #groupTable {
+            clear: both;
+            width: 90%;
+            margin: 50px auto 20px;
+            background-color: #2e2e2e;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Group Randomizer</h1>
+
+    <div class="row">
+        <!-- Tank Section -->
+        <div class="table-container">
+            <table id="tankTable">
+                <thead>
+                    <tr>
+                        <th>Tank</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <textarea id="tankInput" placeholder="Paste Tank Names (one per line)" rows="5"></textarea>
+            <button onclick="addPlayers('tank')">Add Tanks</button>
+        </div>
+
+        <!-- DPS Section -->
+        <div class="table-container">
+            <table id="dpsTable">
+                <thead>
+                    <tr>
+                        <th>DPS</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <textarea id="dpsInput" placeholder="Paste DPS Names (one per line)" rows="5"></textarea>
+            <button onclick="addPlayers('dps')">Add DPS</button>
+        </div>
+
+        <!-- Healer Section -->
+        <div class="table-container">
+            <table id="healerTable">
+                <thead>
+                    <tr>
+                        <th>Healer</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <textarea id="healerInput" placeholder="Paste Healer Names (one per line)" rows="5"></textarea>
+            <button onclick="addPlayers('healer')">Add Healers</button>
+        </div>
+    </div>
+
+    <!-- Generate Group Button -->
+    <div class="center">
+        <button onclick="generateGroup()">Generate Group</button>
+    </div>
+
+    <!-- Group Table -->
+    <table id="groupTable">
+        <thead>
+            <tr>
+                <th>Tank</th>
+                <th>DPS 1</th>
+                <th>DPS 2</th>
+                <th>DPS 3</th>
+                <th>Healer</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="groupRow">
+                <td class="center">-</td>
+                <td class="center">-</td>
+                <td class="center">-</td>
+                <td class="center">-</td>
+                <td class="center">-</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        // Arrays to hold player names
+        var tanks = [];
+        var dpsList = [];
+        var healers = [];
+
+        // Function to add multiple player names to the respective tables and arrays
+        function addPlayers(role) {
+            var inputId = role + 'Input';
+            var tableId = role + 'Table';
+            var playerNames = document.getElementById(inputId).value.trim();
+
+            if (playerNames !== '') {
+                var namesArray = playerNames.split('\n');
+                var tableBody = document.getElementById(tableId).getElementsByTagName('tbody')[0];
+
+                namesArray.forEach(function (playerName) {
+                    playerName = playerName.trim();
+                    if (playerName !== '') {
+                        var newRow = tableBody.insertRow();
+                        var newCell = newRow.insertCell(0);
+                        newCell.textContent = playerName;
+
+                        // Add to the respective array
+                        if (role === 'tank') {
+                            tanks.push(playerName);
+                        } else if (role === 'dps') {
+                            dpsList.push(playerName);
+                        } else if (role === 'healer') {
+                            healers.push(playerName);
+                        }
+                    }
+                });
+
+                // Clear the textarea
+                document.getElementById(inputId).value = '';
+            }
+        }
+
+        // Function to generate a random group
+        function generateGroup() {
+            if (tanks.length < 1 || dpsList.length < 3 || healers.length < 1) {
+                alert('Not enough players to generate a group.');
+                return;
+            }
+
+            // Randomly select players
+            var selectedTank = tanks[Math.floor(Math.random() * tanks.length)];
+            var selectedHealer = healers[Math.floor(Math.random() * healers.length)];
+
+            // Randomly select 3 unique DPS players
+            var shuffledDPS = dpsList.slice().sort(() => 0.5 - Math.random());
+            var selectedDPS = shuffledDPS.slice(0, 3);
+
+            // Display the selected group
+            var groupRow = document.getElementById('groupRow');
+            groupRow.cells[0].textContent = selectedTank;
+            groupRow.cells[1].textContent = selectedDPS[0];
+            groupRow.cells[2].textContent = selectedDPS[1];
+            groupRow.cells[3].textContent = selectedDPS[2];
+            groupRow.cells[4].textContent = selectedHealer;
+        }
+    </script>
+</body>
+
+</html>
