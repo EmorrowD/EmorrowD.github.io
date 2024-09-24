@@ -8,7 +8,7 @@
             background-color: #1e1e1e;
             color: #ffffff;
             font-family: Arial, sans-serif;
-            text-align: center; /* Center all content horizontally */
+            text-align: center;
         }
         h1 {
             color: #c9a0dc;
@@ -17,8 +17,8 @@
         .table-container {
             width: 30%;
             margin: 20px;
-            display: inline-block; /* Change from float to inline-block */
-            vertical-align: top; /* Align the tables at the top */
+            display: inline-block;
+            vertical-align: top;
         }
         table {
             width: 100%;
@@ -73,17 +73,14 @@
             color: #1e1e1e;
             padding: 8px 16px;
             cursor: pointer;
-            width: 100%; /* Make button the same width as the table */
+            width: 100%;
         }
-        /* Remove the .center class since we're centering via body */
     </style>
 </head>
 <body>
     <h1>Group Randomizer</h1>
 
-    <!-- Row containing the three role sections -->
     <div>
-        <!-- Tank Section -->
         <div class="table-container">
             <table id="tankTable">
                 <thead>
@@ -95,7 +92,6 @@
             <button class="button-full-width" onclick="addPlayers('tank')">Add Tanks</button>
         </div>
 
-        <!-- DPS Section -->
         <div class="table-container">
             <table id="dpsTable">
                 <thead>
@@ -107,7 +103,6 @@
             <button class="button-full-width" onclick="addPlayers('dps')">Add DPS</button>
         </div>
 
-        <!-- Healer Section -->
         <div class="table-container">
             <table id="healerTable">
                 <thead>
@@ -120,12 +115,10 @@
         </div>
     </div>
 
-    <!-- Generate Group Button -->
     <div>
         <button onclick="generateGroup()">Generate Group</button>
     </div>
 
-    <!-- Group Table and Copy Button -->
     <div id="group-container">
         <table id="groupTable">
             <thead>
@@ -139,11 +132,11 @@
             </thead>
             <tbody>
                 <tr id="groupRow">
-                    <td class="center">-</td>
-                    <td class="center">-</td>
-                    <td class="center">-</td>
-                    <td class="center">-</td>
-                    <td class="center">-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
                 </tr>
             </tbody>
         </table>
@@ -151,12 +144,10 @@
     </div>
 
     <script>
-        // Arrays to hold player names
         var tanks = [];
         var dpsList = [];
         var healers = [];
 
-        // Function to add multiple player names to the respective tables and arrays
         function addPlayers(role) {
             var inputId = role + 'Input';
             var tableId = role + 'Table';
@@ -173,7 +164,6 @@
                         var newCell = newRow.insertCell(0);
                         newCell.textContent = playerName;
 
-                        // Add to the respective array
                         if (role === 'tank') {
                             tanks.push(playerName);
                         } else if (role === 'dps') {
@@ -184,27 +174,21 @@
                     }
                 });
 
-                // Clear the textarea
                 document.getElementById(inputId).value = '';
             }
         }
 
-        // Function to generate a random group
         function generateGroup() {
             if (tanks.length < 1 || dpsList.length < 3 || healers.length < 1) {
                 alert('Not enough players to generate a group.');
                 return;
             }
 
-            // Randomly select players
             var selectedTank = tanks[Math.floor(Math.random() * tanks.length)];
             var selectedHealer = healers[Math.floor(Math.random() * healers.length)];
-
-            // Randomly select 3 unique DPS players
             var shuffledDPS = dpsList.slice().sort(() => 0.5 - Math.random());
             var selectedDPS = shuffledDPS.slice(0, 3);
 
-            // Display the selected group
             var groupRow = document.getElementById('groupRow');
             groupRow.cells[0].textContent = selectedTank;
             groupRow.cells[1].textContent = selectedDPS[0];
@@ -212,16 +196,13 @@
             groupRow.cells[3].textContent = selectedDPS[2];
             groupRow.cells[4].textContent = selectedHealer;
 
-            // Enable the copy button
             document.getElementById('copyButton').disabled = false;
         }
 
-        // Function to copy the group names to clipboard
         function copyGroup() {
             var groupRow = document.getElementById('groupRow');
             var groupNames = [];
 
-            // Collect the names from the groupRow cells
             for (var i = 0; i < groupRow.cells.length; i++) {
                 var name = groupRow.cells[i].textContent;
                 if (name && name !== '-') {
@@ -229,22 +210,14 @@
                 }
             }
 
-            // Join the names with tabs to match spreadsheet cells
             var clipboardText = groupNames.join('\t');
-
-            // Create a temporary textarea to hold the text
             var tempTextarea = document.createElement('textarea');
             tempTextarea.value = clipboardText;
             document.body.appendChild(tempTextarea);
-
-            // Select and copy the text
             tempTextarea.select();
-            tempTextarea.setSelectionRange(0, 99999); // For mobile devices
+            tempTextarea.setSelectionRange(0, 99999);
             document.execCommand('copy');
-
-            // Remove the temporary textarea
             document.body.removeChild(tempTextarea);
-
             alert('Group copied to clipboard!');
         }
     </script>
