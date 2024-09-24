@@ -1,0 +1,74 @@
+body {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+h1 {
+    color: #c9a0dc;
+}
+.table-container {
+    width: 30%;
+    margin: 20px;
+    display: inline-block;
+    vertical-align: top;
+}
+table {
+    width: 100%;
+    background-color: #2e2e2e;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+}
+th, td {
+    border: 1px solid #444444;
+    padding: 8px;
+    text-align: left;
+}
+th {
+    background-color: #3e3e3e;
+    color: #c9a0dc;
+}
+textarea {
+    width: calc(100% - 12px);
+    background-color: #3e3e3e;
+    border: 1px solid #555555;
+    color: #ffffff;
+    padding: 5px;
+    margin-top: 5px;
+    resize: vertical;
+}
+button {
+    background-color: #c9a0dc;
+    border: none;
+    color: #1e1e1e;
+    padding: 8px 16px;
+    margin-top: 5px;
+    cursor: pointer;
+}
+.button-full-width {
+    width: 100%;
+}
+#groups-container {
+    width: 80%;
+    margin: 30px auto 20px;
+    text-align: center;
+}
+.groupTable {
+    width: 100%;
+    background-color: #2e2e2e;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    table-layout: fixed;
+}
+.groupTable th, .groupTable td {
+    border: 1px solid #444444;
+    padding: 8px;
+    text-align: center;
+    width: 20%;
+}
+.team-title {
+    color: #c9a0dc;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    font-size: 1.2em;
+}
