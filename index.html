@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>Group Randomizer</title>
@@ -10,37 +9,30 @@
             color: #ffffff;
             font-family: Arial, sans-serif;
         }
-
         h1 {
             color: #c9a0dc;
             text-align: center;
         }
-
         .table-container {
             width: 30%;
             margin: 20px;
             float: left;
         }
-
         table {
             width: 100%;
             background-color: #2e2e2e;
             border-collapse: collapse;
             margin-bottom: 10px;
         }
-
-        th,
-        td {
+        th, td {
             border: 1px solid #444444;
             padding: 8px;
             text-align: left;
         }
-
         th {
             background-color: #3e3e3e;
             color: #c9a0dc;
         }
-
         textarea {
             width: calc(100% - 12px);
             background-color: #3e3e3e;
@@ -50,7 +42,6 @@
             margin-top: 5px;
             resize: vertical;
         }
-
         button {
             background-color: #c9a0dc;
             border: none;
@@ -60,27 +51,32 @@
             cursor: pointer;
             width: 100%;
         }
-
         #groupTable {
             clear: both;
             width: 90%;
             margin: 50px auto 20px;
             background-color: #2e2e2e;
         }
-
         .center {
             text-align: center;
         }
-
         /* Clear floats after the columns */
         .row:after {
             content: "";
             display: table;
             clear: both;
         }
+        /* Copy Button Styles */
+        #copyButton {
+            background-color: #c9a0dc;
+            border: none;
+            color: #1e1e1e;
+            padding: 8px 16px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
     </style>
 </head>
-
 <body>
     <h1>Group Randomizer</h1>
 
@@ -89,9 +85,7 @@
         <div class="table-container">
             <table id="tankTable">
                 <thead>
-                    <tr>
-                        <th>Tank</th>
-                    </tr>
+                    <tr><th>Tank</th></tr>
                 </thead>
                 <tbody></tbody>
             </table>
@@ -103,9 +97,7 @@
         <div class="table-container">
             <table id="dpsTable">
                 <thead>
-                    <tr>
-                        <th>DPS</th>
-                    </tr>
+                    <tr><th>DPS</th></tr>
                 </thead>
                 <tbody></tbody>
             </table>
@@ -117,9 +109,7 @@
         <div class="table-container">
             <table id="healerTable">
                 <thead>
-                    <tr>
-                        <th>Healer</th>
-                    </tr>
+                    <tr><th>Healer</th></tr>
                 </thead>
                 <tbody></tbody>
             </table>
@@ -133,27 +123,30 @@
         <button onclick="generateGroup()">Generate Group</button>
     </div>
 
-    <!-- Group Table -->
-    <table id="groupTable">
-        <thead>
-            <tr>
-                <th>Tank</th>
-                <th>DPS 1</th>
-                <th>DPS 2</th>
-                <th>DPS 3</th>
-                <th>Healer</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr id="groupRow">
-                <td class="center">-</td>
-                <td class="center">-</td>
-                <td class="center">-</td>
-                <td class="center">-</td>
-                <td class="center">-</td>
-            </tr>
-        </tbody>
-    </table>
+    <!-- Group Table and Copy Button -->
+    <div class="center">
+        <table id="groupTable">
+            <thead>
+                <tr>
+                    <th>Tank</th>
+                    <th>DPS 1</th>
+                    <th>DPS 2</th>
+                    <th>DPS 3</th>
+                    <th>Healer</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="groupRow">
+                    <td class="center">-</td>
+                    <td class="center">-</td>
+                    <td class="center">-</td>
+                    <td class="center">-</td>
+                    <td class="center">-</td>
+                </tr>
+            </tbody>
+        </table>
+        <button id="copyButton" onclick="copyGroup()" disabled>Copy Group</button>
+    </div>
 
     <script>
         // Arrays to hold player names
@@ -171,7 +164,7 @@
                 var namesArray = playerNames.split('\n');
                 var tableBody = document.getElementById(tableId).getElementsByTagName('tbody')[0];
 
-                namesArray.forEach(function (playerName) {
+                namesArray.forEach(function(playerName) {
                     playerName = playerName.trim();
                     if (playerName !== '') {
                         var newRow = tableBody.insertRow();
@@ -216,8 +209,42 @@
             groupRow.cells[2].textContent = selectedDPS[1];
             groupRow.cells[3].textContent = selectedDPS[2];
             groupRow.cells[4].textContent = selectedHealer;
+
+            // Enable the copy button
+            document.getElementById('copyButton').disabled = false;
+        }
+
+        // Function to copy the group names to clipboard
+        function copyGroup() {
+            var groupRow = document.getElementById('groupRow');
+            var groupNames = [];
+
+            // Collect the names from the groupRow cells
+            for (var i = 0; i < groupRow.cells.length; i++) {
+                var name = groupRow.cells[i].textContent;
+                if (name && name !== '-') {
+                    groupNames.push(name);
+                }
+            }
+
+            // Join the names with tabs to match spreadsheet cells
+            var clipboardText = groupNames.join('\t');
+
+            // Create a temporary textarea to hold the text
+            var tempTextarea = document.createElement('textarea');
+            tempTextarea.value = clipboardText;
+            document.body.appendChild(tempTextarea);
+
+            // Select and copy the text
+            tempTextarea.select();
+            tempTextarea.setSelectionRange(0, 99999); // For mobile devices
+            document.execCommand('copy');
+
+            // Remove the temporary textarea
+            document.body.removeChild(tempTextarea);
+
+            alert('Group copied to clipboard!');
         }
     </script>
 </body>
-
 </html>
