@@ -12,7 +12,6 @@
         }
         h1 {
             color: #c9a0dc;
-            text-align: center;
         }
         .table-container {
             width: 30%;
@@ -55,25 +54,25 @@
         .button-full-width {
             width: 100%;
         }
-        #group-container {
+        #groups-container {
             width: 80%;
             margin: 30px auto 20px;
             text-align: center;
         }
-        #groupTable {
+        .groupTable {
             width: 100%;
             background-color: #2e2e2e;
-            margin-bottom: 10px;
-            margin-left: auto;
-            margin-right: auto;
+            border-collapse: collapse;
+            margin-bottom: 20px;
         }
-        #copyButton {
-            background-color: #c9a0dc;
-            border: none;
-            color: #1e1e1e;
-            padding: 8px 16px;
-            cursor: pointer;
-            width: 100%;
+        .groupTable th, .groupTable td {
+            border: 1px solid #444444;
+            padding: 8px;
+            text-align: center;
+        }
+        .groupTable th {
+            background-color: #3e3e3e;
+            color: #c9a0dc;
         }
     </style>
 </head>
@@ -116,31 +115,11 @@
     </div>
 
     <div>
-        <button onclick="generateGroup()">Generate Group</button>
+        <button onclick="generateGroups()">Generate Groups</button>
     </div>
 
-    <div id="group-container">
-        <table id="groupTable">
-            <thead>
-                <tr>
-                    <th>Tank</th>
-                    <th>DPS 1</th>
-                    <th>DPS 2</th>
-                    <th>DPS 3</th>
-                    <th>Healer</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr id="groupRow">
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                </tr>
-            </tbody>
-        </table>
-        <button id="copyButton" onclick="copyGroup()" disabled>Copy Group</button>
+    <div id="groups-container">
+        <!-- Generated groups will be displayed here -->
     </div>
 
     <script>
@@ -178,37 +157,63 @@
             }
         }
 
-        function generateGroup() {
-            if (tanks.length < 1 || dpsList.length < 3 || healers.length < 1) {
-                alert('Not enough players to generate a group.');
+        function generateGroups() {
+            var groupsContainer = document.getElementById('groups-container');
+            groupsContainer.innerHTML = '';
+
+            var numGroups = Math.min(
+                Math.floor(tanks.length / 1),
+                Math.floor(dpsList.length / 3),
+                Math.floor(healers.length / 1)
+            );
+
+            if (numGroups < 1) {
+                alert('Not enough players to generate any groups.');
                 return;
             }
 
-            var selectedTank = tanks[Math.floor(Math.random() * tanks.length)];
-            var selectedHealer = healers[Math.floor(Math.random() * healers.length)];
-            var shuffledDPS = dpsList.slice().sort(() => 0.5 - Math.random());
-            var selectedDPS = shuffledDPS.slice(0, 3);
+            for (var i = 0; i < numGroups; i++) {
+                var selectedTank = tanks.splice(Math.floor(Math.random() * tanks.length), 1)[0];
+                var selectedHealer = healers.splice(Math.floor(Math.random() * healers.length), 1)[0];
 
-            var groupRow = document.getElementById('groupRow');
-            groupRow.cells[0].textContent = selectedTank;
-            groupRow.cells[1].textContent = selectedDPS[0];
-            groupRow.cells[2].textContent = selectedDPS[1];
-            groupRow.cells[3].textContent = selectedDPS[2];
-            groupRow.cells[4].textContent = selectedHealer;
+                var selectedDPS = [];
+                for (var j = 0; j < 3; j++) {
+                    var dpsIndex = Math.floor(Math.random() * dpsList.length);
+                    selectedDPS.push(dpsList.splice(dpsIndex, 1)[0]);
+                }
 
-            tanks.splice(tanks.indexOf(selectedTank), 1);
-            healers.splice(healers.indexOf(selectedHealer), 1);
-            selectedDPS.forEach(function(dps) {
-                dpsList.splice(dpsList.indexOf(dps), 1);
-            });
+                removePlayerFromTable('tankTable', selectedTank);
+                removePlayerFromTable('healerTable', selectedHealer);
+                selectedDPS.forEach(function(dps) {
+                    removePlayerFromTable('dpsTable', dps);
+                });
 
-            removePlayerFromTable('tankTable', selectedTank);
-            removePlayerFromTable('healerTable', selectedHealer);
-            selectedDPS.forEach(function(dps) {
-                removePlayerFromTable('dpsTable', dps);
-            });
+                var groupTable = document.createElement('table');
+                groupTable.className = 'groupTable';
 
-            document.getElementById('copyButton').disabled = false;
+                var thead = document.createElement('thead');
+                var headerRow = document.createElement('tr');
+                var roles = ['Tank', 'DPS 1', 'DPS 2', 'DPS 3', 'Healer'];
+                roles.forEach(function(role) {
+                    var th = document.createElement('th');
+                    th.textContent = role;
+                    headerRow.appendChild(th);
+                });
+                thead.appendChild(headerRow);
+                groupTable.appendChild(thead);
+
+                var tbody = document.createElement('tbody');
+                var dataRow = document.createElement('tr');
+                [selectedTank].concat(selectedDPS).concat([selectedHealer]).forEach(function(name) {
+                    var td = document.createElement('td');
+                    td.textContent = name;
+                    dataRow.appendChild(td);
+                });
+                tbody.appendChild(dataRow);
+                groupTable.appendChild(tbody);
+
+                groupsContainer.appendChild(groupTable);
+            }
         }
 
         function removePlayerFromTable(tableId, playerName) {
@@ -223,28 +228,6 @@
                     break;
                 }
             }
-        }
-
-        function copyGroup() {
-            var groupRow = document.getElementById('groupRow');
-            var groupNames = [];
-
-            for (var i = 0; i < groupRow.cells.length; i++) {
-                var name = groupRow.cells[i].textContent;
-                if (name && name !== '-') {
-                    groupNames.push(name);
-                }
-            }
-
-            var clipboardText = groupNames.join('\t');
-            var tempTextarea = document.createElement('textarea');
-            tempTextarea.value = clipboardText;
-            document.body.appendChild(tempTextarea);
-            tempTextarea.select();
-            tempTextarea.setSelectionRange(0, 99999);
-            document.execCommand('copy');
-            document.body.removeChild(tempTextarea);
-            alert('Group copied to clipboard!');
         }
     </script>
 </body>
