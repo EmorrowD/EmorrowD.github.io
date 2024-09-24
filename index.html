@@ -64,15 +64,19 @@
             background-color: #2e2e2e;
             border-collapse: collapse;
             margin-bottom: 20px;
+            table-layout: fixed; /* Ensure fixed table layout */
         }
         .groupTable th, .groupTable td {
             border: 1px solid #444444;
             padding: 8px;
             text-align: center;
+            width: 20%; /* Each column takes up 20% of the table width */
         }
-        .groupTable th {
-            background-color: #3e3e3e;
+        .group-title {
             color: #c9a0dc;
+            margin-top: 20px;
+            margin-bottom: 5px;
+            font-size: 1.2em;
         }
     </style>
 </head>
@@ -188,6 +192,14 @@
                     removePlayerFromTable('dpsTable', dps);
                 });
 
+                var groupDiv = document.createElement('div');
+
+                // Add group title
+                var groupTitle = document.createElement('div');
+                groupTitle.className = 'group-title';
+                groupTitle.textContent = 'Group ' + (i + 1);
+                groupDiv.appendChild(groupTitle);
+
                 var groupTable = document.createElement('table');
                 groupTable.className = 'groupTable';
 
@@ -212,7 +224,8 @@
                 tbody.appendChild(dataRow);
                 groupTable.appendChild(tbody);
 
-                groupsContainer.appendChild(groupTable);
+                groupDiv.appendChild(groupTable);
+                groupsContainer.appendChild(groupDiv);
             }
         }
 
