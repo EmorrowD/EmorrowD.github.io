@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Team Randomizer</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Include tsParticles library -->
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
 </head>
 <body>
     <h1>Team Randomizer</h1>
@@ -47,8 +49,12 @@
         <button onclick="generateTeams()">Generate Teams</button>
     </div>
 
-    <div id="groups-container">
-        <!-- Generated teams will be displayed here -->
+    <!-- Particles Container -->
+    <div id="particles-js">
+        <!-- Teams will be displayed here -->
+        <div id="groups-container">
+            <!-- Generated teams will be displayed here -->
+        </div>
     </div>
 
     <script src="script.js"></script>
