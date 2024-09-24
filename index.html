@@ -196,7 +196,33 @@
             groupRow.cells[3].textContent = selectedDPS[2];
             groupRow.cells[4].textContent = selectedHealer;
 
+            tanks.splice(tanks.indexOf(selectedTank), 1);
+            healers.splice(healers.indexOf(selectedHealer), 1);
+            selectedDPS.forEach(function(dps) {
+                dpsList.splice(dpsList.indexOf(dps), 1);
+            });
+
+            removePlayerFromTable('tankTable', selectedTank);
+            removePlayerFromTable('healerTable', selectedHealer);
+            selectedDPS.forEach(function(dps) {
+                removePlayerFromTable('dpsTable', dps);
+            });
+
             document.getElementById('copyButton').disabled = false;
+        }
+
+        function removePlayerFromTable(tableId, playerName) {
+            var table = document.getElementById(tableId);
+            var tbody = table.getElementsByTagName('tbody')[0];
+            var rows = tbody.getElementsByTagName('tr');
+
+            for (var i = rows.length - 1; i >= 0; i--) {
+                var cellText = rows[i].cells[0].textContent;
+                if (cellText === playerName) {
+                    tbody.deleteRow(i);
+                    break;
+                }
+            }
         }
 
         function copyGroup() {
